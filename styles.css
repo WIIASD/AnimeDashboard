@@ -60,3 +60,32 @@ body {
     text-decoration: none; /* Removes underline from links */
     color: inherit; /* Keeps the text color the same as the parent element */
   }
+
+  .load-more {
+    padding: 8px 16px; /* Adjust size to your liking */
+    font-size: var(--font-size-large); /* Set font size */
+    text-align: center; /* Center the text inside the button */
+    border: 1px solid #000; /* Solid border with a color of your choice */
+    background-color: transparent; /* Transparent background */
+    cursor: pointer; /* Changes cursor to pointer on hover */
+    text-decoration: none; /* Removes underline from text */
+    display: inline-block; /* Allows width and height to be set */
+    margin: 8px 0; /* Adds space around the button, adjust as needed */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+  
+    /* Rounded corners */
+    border-radius: 4px;
+  
+    /* Colors */
+    color: #000; /* Text color */
+    
+    /* Removes outline on focus for a clean style, but consider accessibility implications */
+    outline: none;
+
+    align-items: center;
+  }
+  
+  .load-more:hover, .load-more:focus {
+    background-color: #f0f0f0; /* Light background on hover/focus */
+    color: #333; /* Slightly darker text color on hover/focus */
+  }

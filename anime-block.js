@@ -9,25 +9,35 @@ async function fetchData(url) {
     }
 }
 
+async function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 class BangumiCollectionItem {
-    constructor(name, name_cn, cover, total_ep, watched_ep, subject_id) {
-        this.name = name;
-        this.name_cn = name_cn;
-        this.cover = cover;
-        this.total_ep = total_ep;
-        this.watched_ep = watched_ep;
-        this.subject_id = subject_id;
+
+    constructor(bangumiCollectionData, showProgress) {
+        const subject = bangumiCollectionData["subject"]
+        this.name = subject["name"];
+        this.name_cn = subject["name_cn"];
+        this.cover = subject["images"]["common"];
+        this.total_ep = subject["eps"];
+        this.watched_ep = bangumiCollectionData["ep_status"];
+        this.subject_id = subject["id"];
+        this.showProgress = showProgress;
     }
 
     renderPanel() {
+        const title = `<anime-title title="${this.name_cn}">${this.name_cn}</anime-title>`
+        const subtitle = `<anime-subtitle title="${this.name}">${this.name}</anime-subtitle>`
+        const animeProgress = this.showProgress ? `<anime-progress>进度：${this.watched_ep}/${this.total_ep}</anime-progress>` : "";
         return `
             <a href="http://bgm.tv/subject/${this.subject_id}" target="_blank" class="anime-panel-link">
                 <div class="anime-panel">
                     <img src="${this.cover}" alt="Anime Title">
                     <div class="anime-info-block">
-                        <anime-title title="${this.name_cn}">${this.name_cn}</anime-title>
-                        <anime-subtitle title="${this.name}">${this.name}</anime-subtitle>
-                        <anime-progress>进度：${this.watched_ep}/${this.total_ep}</anime-progress>
+                        ${title}
+                        ${subtitle}
+                        ${animeProgress}
                     </div>
                 </div>
             </a>
@@ -36,48 +46,114 @@ class BangumiCollectionItem {
 }
 
 class BangumiCollectionDashboard {
-    constructor(animes) {
-        this.animes = animes;
+
+    static collectionType = {
+        wish: 1,
+        watched: 2,
+        watching: 3,
+        left: 4,
+        abandon: 5
+    }
+
+    constructor(userId, type, limit = 10) {
+        this.userId = userId;
+        this.type = BangumiCollectionDashboard.collectionType[type];
+        this.limit = limit;
+        this.offset = 0;
+        this.animes = [];
+        this.total = 0;
+    }
+
+    async init() { 
+        await this.fetchAnimes(); //load first page of data.
+    }
+
+    async fetchAnimes() {
+        const subject_type = 2 //2: anime
+        const result = await fetchData(`https://api.bgm.tv/v0/users/${this.userId}/collections?subject_type=${subject_type}&type=${this.type}&limit=${this.limit}&offset=${this.offset}`);
+        
+        console.log(result)
+
+        const animes = result["data"].map(a => new BangumiCollectionItem(
+            a,
+            this.type == BangumiCollectionDashboard.collectionType.watching
+        ))
+
+        this.total = result["total"];
+        this.animes = this.animes.concat(animes)
+    }
+
+    haveMore() {
+        return this.offset < this.total;
+    }
+
+    async loadMore() {
+        this.offset += this.limit;
+        if (this.offset >= this.total) {
+            console.log("no more data to load!");
+            return;
+        }
+        await this.fetchAnimes();
     }
 
     renderAnimeDashboard() {
-        return `
-            <div class="dashboard">
-                ${this.animes.map(a => a.renderPanel()).join('\n')}
-            </div>
-        `
+        const dashboardDiv = document.createElement('div');
+        dashboardDiv.className = 'dashboard';
+        dashboardDiv.innerHTML = this.animes.map(a => a.renderPanel()).join('\n')
+        return dashboardDiv
     }
 }
 
 class AnimeBlock extends HTMLElement {
-    async main(animeBlock, userId) {
+    constructor() {
+        super();
+        this.dashboard = null;
+    }
+
+    render () {
+        this.innerHTML = ""; // Clear the existing content.
+        this.appendChild(this.dashboard.renderAnimeDashboard());
+        if (this.dashboard.haveMore()) {
+            const button = this.createLoadMoreButton();
+            this.appendChild(button);
+        }
+    }
+
+    async main(userId, collectionType) {
         try {
-            const offset = 0
-            const limit = 10
-            const subject_type = 2 //2: anime
-            const type = 2 //1: want, 2: watched, 3: watching, 4: ge, 5: abandon
-            const result = await fetchData(`https://api.bgm.tv/v0/users/${userId}/collections?subject_type=${subject_type}&type=${type}&limit=${limit}&offset=${offset}`);
-            const animes = result["data"].map(a => { 
-                const subject = a["subject"]
-                return new BangumiCollectionItem(
-                    subject["name"],
-                    subject["name_cn"],
-                    subject["images"]["common"],
-                    subject["eps"],
-                    a["ep_status"],
-                    a.subject_id,
-                )
-            })
-            console.log(result)
-            animeBlock.innerHTML = new BangumiCollectionDashboard(animes).renderAnimeDashboard();
+            this.dashboard = new BangumiCollectionDashboard(userId, collectionType, 10)
+            await this.dashboard.init();
+            this.render();
         } catch (e) {
-            animeBlock.innerHTML = `<p>Error loading content</p>`;
+            this.innerHTML = `<p>Error loading content: ${e}</p>`;
+            console.error(e.stack);
         }
     }
 
     connectedCallback() {
         const userId = this.getAttribute('data-user-id');
-        this.main(this, userId)
+        const collectionType = this.getAttribute("data-collection-type")
+        this.main(userId, collectionType)
+    }
+
+    createLoadMoreButton() {
+        // Create a container for the button to assist with centering
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.justifyContent = 'center';
+        buttonContainer.style.marginTop = '16px'; // Add some space above the button
+
+        const loadMoreButton = document.createElement('button');
+        loadMoreButton.innerText = 'Load More';
+        loadMoreButton.className = 'load-more'; // Add the class for styling
+        loadMoreButton.addEventListener('click', async () => {
+            await this.dashboard.loadMore();
+            this.render(); // Re-render the dashboard with the new items
+        });
+        
+        // Append the button to the container, and the container to the component
+        buttonContainer.appendChild(loadMoreButton);
+        return buttonContainer
     }
 }
 
