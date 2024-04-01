@@ -1,0 +1,60 @@
+/* styles.css */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .anime-panel {
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .anime-panel img {
+    width: 100%;
+    display: block;
+  }
+  
+  .anime-info {
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .anime-info h3 {
+    margin: 0;
+    font-size: 1.2em;
+    white-space: nowrap; /* Prevents the text from wrapping to a new line */
+    overflow: hidden; /* Ensures the overflow text is hidden */
+    text-overflow: ellipsis; /* Adds an ellipsis to indicate text overflow */
+    width: 100%; /* Specify a width; adjust as necessary. 100% assumes it will take the full width of its parent container */
+    display: block; /* Makes sure h3 behaves like a block-level element with regard to width */
+  }
+
+  .anime-info h4 {
+    margin: 0;
+    font-size: 0.9em;
+    white-space: nowrap; /* Prevents the text from wrapping to a new line */
+    overflow: hidden; /* Ensures the overflow text is hidden */
+    text-overflow: ellipsis; /* Adds an ellipsis to indicate text overflow */
+    width: 100%; /* Specify a width; adjust as necessary. 100% assumes it will take the full width of its parent container */
+    display: block; /* Makes sure h3 behaves like a block-level element with regard to width */
+    color: #666;
+  }
+  
+  .anime-info p {
+    margin: 0;
+    color: #666;
+  }
+
+  .anime-panel-link {
+    text-decoration: none; /* Removes underline from links */
+    color: inherit; /* Keeps the text color the same as the parent element */
+  }
