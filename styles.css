@@ -1,4 +1,10 @@
 /* styles.css */
+:root {
+  --font-size-base: calc(0.5vw + 0.5vh + 0.25vmin);
+  --font-size-large: calc(0.75vw + 0.75vh + 0.25vmin);
+  --text-color-secondary: #666;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -6,7 +12,7 @@ body {
   
   .dashboard {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(100px, 20%));
     gap: 16px;
     padding: 16px;
   }
@@ -28,31 +34,24 @@ body {
     text-align: center;
   }
   
-  .anime-info h3 {
+  .anime-info h3, .anime-info h4, .anime-info p {
     margin: 0;
-    font-size: 1.2em;
     white-space: nowrap; /* Prevents the text from wrapping to a new line */
     overflow: hidden; /* Ensures the overflow text is hidden */
     text-overflow: ellipsis; /* Adds an ellipsis to indicate text overflow */
-    width: 100%; /* Specify a width; adjust as necessary. 100% assumes it will take the full width of its parent container */
-    display: block; /* Makes sure h3 behaves like a block-level element with regard to width */
-  }
-
-  .anime-info h4 {
-    margin: 0;
-    font-size: 0.9em;
-    white-space: nowrap; /* Prevents the text from wrapping to a new line */
-    overflow: hidden; /* Ensures the overflow text is hidden */
-    text-overflow: ellipsis; /* Adds an ellipsis to indicate text overflow */
-    width: 100%; /* Specify a width; adjust as necessary. 100% assumes it will take the full width of its parent container */
-    display: block; /* Makes sure h3 behaves like a block-level element with regard to width */
-    color: #666;
+    width: 100%; /* Specify a width; adjust as necessary */
+    display: block; /* Ensures the element behaves like a block-level element */
   }
   
-  .anime-info p {
-    margin: 0;
-    color: #666;
+  .anime-info h3 {
+    font-size: var(--font-size-large); /* Using the larger font size */
   }
+  
+  .anime-info h4, .anime-info p {
+    font-size: var(--font-size-base);
+    color: var(--text-color-secondary);
+  }
+  
 
   .anime-panel-link {
     text-decoration: none; /* Removes underline from links */
