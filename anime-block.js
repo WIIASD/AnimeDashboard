@@ -24,10 +24,10 @@ class BangumiCollectionItem {
             <a href="http://bgm.tv/subject/${this.subject_id}" target="_blank" class="anime-panel-link">
                 <div class="anime-panel">
                     <img src="${this.cover}" alt="Anime Title">
-                    <div class="anime-info">
-                        <h3 title="${this.name_cn}">${this.name_cn}</h3>
-                        <h4 title="${this.name}">${this.name}</h4>
-                        <p>进度：${this.watched_ep}/${this.total_ep}</p>
+                    <div class="anime-info-block">
+                        <anime-title title="${this.name_cn}">${this.name_cn}</anime-title>
+                        <anime-subtitle title="${this.name}">${this.name}</anime-subtitle>
+                        <anime-progress>进度：${this.watched_ep}/${this.total_ep}</anime-progress>
                     </div>
                 </div>
             </a>

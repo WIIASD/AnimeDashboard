@@ -1,7 +1,7 @@
 /* styles.css */
 :root {
-  --font-size-base: calc(0.5vw + 0.5vh + 0.25vmin);
-  --font-size-large: calc(0.75vw + 0.75vh + 0.25vmin);
+  --font-size-base: calc(0.35vw + 0.35vh + 0.25vmin);
+  --font-size-large: calc(0.5vw + 0.5vh + 0.25vmin);
   --text-color-secondary: #666;
 }
 
@@ -12,7 +12,7 @@ body {
   
   .dashboard {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 20%));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 20%));
     gap: 16px;
     padding: 16px;
   }
@@ -29,25 +29,28 @@ body {
     display: block;
   }
   
-  .anime-info {
+  anime-info-block {
     padding: 8px;
     text-align: center;
   }
   
-  .anime-info h3, .anime-info h4, .anime-info p {
+  anime-title, anime-subtitle, anime-progress {
     margin: 0;
-    white-space: nowrap; /* Prevents the text from wrapping to a new line */
-    overflow: hidden; /* Ensures the overflow text is hidden */
-    text-overflow: ellipsis; /* Adds an ellipsis to indicate text overflow */
-    width: 100%; /* Specify a width; adjust as necessary */
-    display: block; /* Ensures the element behaves like a block-level element */
+    padding: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    display: block;
+    font-weight: bold;
+    text-align: center;
   }
   
-  .anime-info h3 {
-    font-size: var(--font-size-large); /* Using the larger font size */
+  anime-title {
+    font-size: var(--font-size-large);
   }
   
-  .anime-info h4, .anime-info p {
+  anime-subtitle, anime-progress {
     font-size: var(--font-size-base);
     color: var(--text-color-secondary);
   }
