@@ -89,8 +89,8 @@ class BangumiCollectionDashboard {
 
     async loadMore() {
         this.offset += this.limit;
-        if (this.offset >= this.total) {
-            console.log("no more data to load!");
+        if (!this.haveMore()) {
+            alert("no more data to load!");
             return;
         }
         await this.fetchAnimes();
@@ -121,7 +121,7 @@ class AnimeBlock extends HTMLElement {
 
     async main(userId, collectionType) {
         try {
-            this.dashboard = new BangumiCollectionDashboard(userId, collectionType, 10)
+            this.dashboard = new BangumiCollectionDashboard(userId, collectionType, 8)
             await this.dashboard.init();
             this.render();
         } catch (e) {
@@ -147,7 +147,9 @@ class AnimeBlock extends HTMLElement {
         loadMoreButton.innerText = 'Load More';
         loadMoreButton.className = 'load-more'; // Add the class for styling
         loadMoreButton.addEventListener('click', async () => {
+            loadMoreButton.disabled = true;
             await this.dashboard.loadMore();
+            loadMoreButton.disabled = false;
             this.render(); // Re-render the dashboard with the new items
         });
         
